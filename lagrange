@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+
+import pandas as pd
+from scipy.interpolate import lagrange
+
+input_file = r'E:\cwz\study\data_mining\chapter6\test\data\missing_data.xls'
+output_file = r'E:\cwz\study\data_mining\chapter6\test\tmp\missing_data_processed.xlsx'
+
+data = pd.read_excel(input_file, header=None)
+
+
+def ploy_interp_column(s, n, k=5):
+    y = s[list(range(n - k, n)) + list(range(n + 1, n + 1 + k))]
+    y = y[y.notnull()]
+    return lagrange(y.index, list(y))(n)
+
+
+for i in data.columns:
+    for j in range(len(data)):
+        if (data[i].isnull())[j]:
+            data[i][j] = ploy_interp_column(data[i], j, k=5)
+
+data.to_excel(output_file, header=None, index=False)
