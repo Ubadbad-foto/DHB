@@ -9,8 +9,8 @@ data = pd.read_excel(input_file, header=None)
 
 
 def ploy_interp_column(s, n, k=5):
-    # 此处提醒使用s.reindex()重新增加数据索引避免后续出错，但是会导致后续lagrange计算出错，忽略warning
-    y = s[list(range(n - k, n)) + list(range(n + 1, n + 1 + k))]  # 取出需要计算的缺失值的前5后5数据
+    # 根据index索引对应位置数据，py3中使用pd.reindex()
+    y = s.reindex(list(range(n - k, n)) + list(range(n + 1, n + 1 + k)))  # 取出需要计算的缺失值的前5后5数据
     y = y[y.notnull()]  # 排除数据中的空值
     return lagrange(y.index, list(y))(n)  # lagrange函数输出结果为lagrange多项式系数，(n)为计算该位置的插值
 
